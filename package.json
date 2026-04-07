@@ -1,0 +1,12 @@
+{
+  "name": "github-trending",
+  "version": "1.0.0",
+  "description": "GitHub trending repos, stars, AI/ML projects API for On-Demand.io",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1"
+  }
+}
