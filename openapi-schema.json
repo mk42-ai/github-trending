@@ -3,10 +3,12 @@
   "info": {
     "title": "GitHub Trending API",
     "version": "1.0.0",
-    "description": "Live GitHub repository data — trending AI repos, most starred, search, repo stats, contributors, releases. Uses official GitHub REST API."
+    "description": "Live GitHub repository data \u2014 trending AI repos, most starred, search, repo stats, contributors, releases. Uses official GitHub REST API."
   },
   "servers": [
-    { "url": "https://serverless.on-demand.io/apps/github-trending" }
+    {
+      "url": "https://serverless.on-demand.io/apps/github-trending"
+    }
   ],
   "paths": {
     "/github/trending-ai": {
@@ -15,13 +17,35 @@
         "summary": "Get trending AI/ML/LLM repositories",
         "description": "Returns top AI repos pushed in the last N days, sorted by stars. Filters for LLM, AI agents, ML, generative AI topics with 100+ stars.",
         "parameters": [
-          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 }, "description": "Max results (1-30)" },
-          { "name": "days", "in": "query", "schema": { "type": "integer", "default": 30 }, "description": "Look back N days" }
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Max results (1-30)"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 30
+            },
+            "description": "Look back N days"
+          }
         ],
         "responses": {
           "200": {
             "description": "Trending AI repos",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RepoListResponse" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -32,14 +56,44 @@
         "summary": "Get trending repos by topic",
         "description": "Returns repos created in the last N days for a specific topic, sorted by stars.",
         "parameters": [
-          { "name": "topic", "in": "query", "schema": { "type": "string", "default": "ai" }, "description": "GitHub topic (e.g. ai, llm, machine-learning)" },
-          { "name": "days", "in": "query", "schema": { "type": "integer", "default": 7 }, "description": "Look back N days" },
-          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+          {
+            "name": "topic",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "ai"
+            },
+            "description": "GitHub topic (e.g. ai, llm, machine-learning)"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 7
+            },
+            "description": "Look back N days"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "limit parameter"
+          }
         ],
         "responses": {
           "200": {
             "description": "Trending repos",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RepoListResponse" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -49,13 +103,35 @@
         "operationId": "getMostStarred",
         "summary": "Get most starred AI repos all-time",
         "parameters": [
-          { "name": "topic", "in": "query", "schema": { "type": "string", "default": "artificial-intelligence" } },
-          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+          {
+            "name": "topic",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "artificial-intelligence"
+            },
+            "description": "topic parameter"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "limit parameter"
+          }
         ],
         "responses": {
           "200": {
             "description": "Most starred repos",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RepoListResponse" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -65,13 +141,35 @@
         "operationId": "getRepo",
         "summary": "Get details for a specific repository",
         "parameters": [
-          { "name": "owner", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "repo", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "owner",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "owner parameter"
+          },
+          {
+            "name": "repo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "repo parameter"
+          }
         ],
         "responses": {
           "200": {
             "description": "Repository details",
-            "content": { "application/json": { "schema": { "type": "object" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -79,15 +177,37 @@
     "/github/repo/{owner}/{repo}/stats": {
       "get": {
         "operationId": "getRepoStats",
-        "summary": "Get extended repo stats — contributors, releases, recent commits",
+        "summary": "Get extended repo stats \u2014 contributors, releases, recent commits",
         "parameters": [
-          { "name": "owner", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "repo", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "owner",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "owner parameter"
+          },
+          {
+            "name": "repo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "repo parameter"
+          }
         ],
         "responses": {
           "200": {
             "description": "Repository extended stats",
-            "content": { "application/json": { "schema": { "type": "object" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -97,15 +217,63 @@
         "operationId": "searchRepos",
         "summary": "Search GitHub repositories",
         "parameters": [
-          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" }, "description": "Search query (uses GitHub search syntax)" },
-          { "name": "sort", "in": "query", "schema": { "type": "string", "enum": ["stars", "forks", "updated", "help-wanted-issues"], "default": "stars" } },
-          { "name": "order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } },
-          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query (uses GitHub search syntax)"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "stars",
+                "forks",
+                "updated",
+                "help-wanted-issues"
+              ],
+              "default": "stars"
+            },
+            "description": "Sort field"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "description": "Sort direction"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Max results (1-30)"
+          }
         ],
         "responses": {
           "200": {
             "description": "Search results",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RepoListResponse" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -115,12 +283,26 @@
         "operationId": "getUser",
         "summary": "Get GitHub user info and top repos",
         "parameters": [
-          { "name": "username", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "username parameter"
+          }
         ],
         "responses": {
           "200": {
             "description": "User details",
-            "content": { "application/json": { "schema": { "type": "object" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -132,7 +314,13 @@
         "responses": {
           "200": {
             "description": "Service healthy",
-            "content": { "application/json": { "schema": { "type": "object" } } }
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -143,27 +331,65 @@
       "RepoListResponse": {
         "type": "object",
         "properties": {
-          "ok": { "type": "boolean" },
-          "total_count": { "type": "integer" },
-          "count": { "type": "integer" },
-          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Repo" } }
+          "ok": {
+            "type": "boolean"
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Repo"
+            }
+          }
         }
       },
       "Repo": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "full_name": { "type": "string" },
-          "owner": { "type": "string" },
-          "owner_avatar": { "type": "string" },
-          "description": { "type": "string" },
-          "url": { "type": "string" },
-          "stars": { "type": "integer" },
-          "forks": { "type": "integer" },
-          "language": { "type": "string" },
-          "topics": { "type": "array", "items": { "type": "string" } },
-          "created_at": { "type": "string" },
-          "updated_at": { "type": "string" }
+          "name": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "owner_avatar": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "stars": {
+            "type": "integer"
+          },
+          "forks": {
+            "type": "integer"
+          },
+          "language": {
+            "type": "string"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
         }
       }
     }
