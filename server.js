@@ -109,21 +109,40 @@ app.get('/github/trending', async (req, res) => {
   }
 });
 
-// GET /github/trending-ai — curated AI/ML/LLM trending (last 30 days, multiple topics)
+// GET /github/trending-ai — curated AI/ML/LLM trending (multi-strategy fallback)
 app.get('/github/trending-ai', async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
-    const days = parseInt(req.query.days) || 30;
+    const days = parseInt(req.query.days) || 90;
     const since = daysAgo(days);
 
-    // Search for AI-related repos pushed recently with high stars
-    const q = `(topic:llm OR topic:ai-agents OR topic:artificial-intelligence OR topic:machine-learning OR topic:generative-ai) pushed:>${since} stars:>100`;
-    const data = await gh('/search/repositories', {
-      q,
+    // Strategy 1: Recently pushed AI repos with significant stars
+    let data = await gh('/search/repositories', {
+      q: `(topic:llm OR topic:ai-agents OR topic:artificial-intelligence OR topic:machine-learning OR topic:generative-ai OR topic:ai) pushed:>${since} stars:>500`,
       sort: 'stars',
       order: 'desc',
       per_page: limit,
     });
+
+    // Strategy 2: If empty, broaden — drop the topic filter, search by keyword + recent activity
+    if (!data.items || data.items.length === 0) {
+      data = await gh('/search/repositories', {
+        q: `AI agents OR LLM OR "large language model" pushed:>${since} stars:>1000`,
+        sort: 'stars',
+        order: 'desc',
+        per_page: limit,
+      });
+    }
+
+    // Strategy 3: All-time most starred AI if still empty
+    if (!data.items || data.items.length === 0) {
+      data = await gh('/search/repositories', {
+        q: `topic:artificial-intelligence stars:>10000`,
+        sort: 'stars',
+        order: 'desc',
+        per_page: limit,
+      });
+    }
 
     res.json({
       ok: true,
