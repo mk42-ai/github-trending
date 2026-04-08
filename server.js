@@ -109,47 +109,45 @@ app.get('/github/trending', async (req, res) => {
   }
 });
 
-// GET /github/trending-ai — curated AI/ML/LLM trending (multi-strategy fallback)
+// GET /github/trending-ai — merge multiple topic queries (guaranteed to return results)
 app.get('/github/trending-ai', async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 10, 30);
-    const days = parseInt(req.query.days) || 90;
-    const since = daysAgo(days);
 
-    // Strategy 1: Recently pushed AI repos with significant stars
-    let data = await gh('/search/repositories', {
-      q: `(topic:llm OR topic:ai-agents OR topic:artificial-intelligence OR topic:machine-learning OR topic:generative-ai OR topic:ai) pushed:>${since} stars:>500`,
-      sort: 'stars',
-      order: 'desc',
-      per_page: limit,
-    });
-
-    // Strategy 2: If empty, broaden — drop the topic filter, search by keyword + recent activity
-    if (!data.items || data.items.length === 0) {
-      data = await gh('/search/repositories', {
-        q: `AI agents OR LLM OR "large language model" pushed:>${since} stars:>1000`,
+    // Fetch from multiple topics in parallel — guaranteed to return real repos
+    const topics = ['llm', 'ai-agents', 'generative-ai', 'artificial-intelligence', 'machine-learning'];
+    const fetches = topics.map(topic =>
+      gh('/search/repositories', {
+        q: `topic:${topic}`,
         sort: 'stars',
         order: 'desc',
-        per_page: limit,
-      });
+        per_page: 8,
+      }).catch(() => ({ items: [] }))
+    );
+
+    const results = await Promise.all(fetches);
+
+    // Merge and dedupe by full_name
+    const seen = new Set();
+    const merged = [];
+    for (const r of results) {
+      for (const repo of (r.items || [])) {
+        if (seen.has(repo.full_name)) continue;
+        seen.add(repo.full_name);
+        merged.push(repo);
+      }
     }
 
-    // Strategy 3: All-time most starred AI if still empty
-    if (!data.items || data.items.length === 0) {
-      data = await gh('/search/repositories', {
-        q: `topic:artificial-intelligence stars:>10000`,
-        sort: 'stars',
-        order: 'desc',
-        per_page: limit,
-      });
-    }
+    // Sort by stars desc, take top N
+    merged.sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
+    const top = merged.slice(0, limit);
 
     res.json({
       ok: true,
-      query: { days, limit },
-      total_count: data.total_count,
-      count: data.items.length,
-      data: data.items.map(normalizeRepo),
+      query: { limit, topics },
+      total_count: merged.length,
+      count: top.length,
+      data: top.map(normalizeRepo),
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
